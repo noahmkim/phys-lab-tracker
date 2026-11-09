@@ -1,0 +1,21 @@
+name: PHYS 135A lab tracker
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"     # every 5 min (GitHub may delay runs by 5-15 min)
+  workflow_dispatch:           # adds a "Run workflow" button for manual tests
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check lab seats
+        env:
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python phys_lab_tracker.py --once
